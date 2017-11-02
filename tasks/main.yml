@@ -11,12 +11,14 @@
   set_fact:
     ssh_fwrule: [{protocol: "ssh", port: "tcp:22", src: "{{public_ip}}/32"}]
 - name: creates network
-  gce_net:
+  local_action:
+    module: gce_net
     name: "{{hostname}}-net"
     mode: auto
     state: present
 - name: creates inbound firewall rules
-  gce_net:
+  local_action:
+    module: gce_net
     name: "{{hostname}}-net"
     fwname: "inbound-{{item.protocol}}"
     allowed: "{{item.port}}"
@@ -24,12 +26,14 @@
     src_range: ["{{item.src}}"] 
   with_items: "{{open_ports}} + {{ssh_fwrule}}"
 - name: creates external IP
-  gce_eip:
+  local_action:
+    module: gce_eip
     name: "{{hostname}}-ip"
     region: "{{region}}"
     state: present
 - name: creates gce engine
-  gce:
+  local_action:
+    module: gce
     instance_names: "{{hostname}}"
     zone: "{{zone}}"
     machine_type: "{{machine_type}}"
