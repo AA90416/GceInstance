@@ -16,6 +16,9 @@
     name: "{{hostname}}-net"
     mode: auto
     state: present
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
 - name: creates inbound firewall rules
   local_action:
     module: gce_net
@@ -24,6 +27,9 @@
     allowed: "{{item.port}}"
     state: present
     src_range: ["{{item.src}}"] 
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
   with_items: "{{open_ports}} + {{ssh_fwrule}}"
 - name: creates external IP
   local_action:
@@ -31,6 +37,9 @@
     name: "{{hostname}}-ip"
     region: "{{region}}"
     state: present
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
 - name: creates gce engine
   local_action:
     module: gce
@@ -40,6 +49,9 @@
     external_ip: "{{hostname}}-ip"
     network: "{{hostname}}-net"
     state: present
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
   register: instance
 - name: saves host data
   add_host:
